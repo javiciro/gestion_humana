@@ -1,0 +1,6 @@
+curl -X POST http://localhost:3500/asignar-rol \
+  -H "Content-Type: application/json" \
+  -d '{
+        "userId": 1,
+        "nuevoRolId": 3
+      }'
