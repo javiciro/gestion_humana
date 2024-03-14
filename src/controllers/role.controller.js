@@ -1,9 +1,10 @@
-// role.controller.js
+const jwt = require("jsonwebtoken");
+const Usuario = require('../models/user.models.js');
 
-import Usuario from '../models/user.models.js';
+const secretKey = process.env.LLAVE || "tu_clave_secreta";
+const expiresIn = '1d'; // El token expirará después de 1 día
 
-// Función para cambiar el rol de un usuario
-export async function asignarRol(req, res) {
+async function asignarRol(req, res) {
     try {
         const { userId, nuevoRolId } = req.body;
 
@@ -13,15 +14,30 @@ export async function asignarRol(req, res) {
             return res.status(404).json({ ok: false, menssage: "Usuario no encontrado" });
         }
 
-        // Verificar si el nuevo rol es válido (opcional, dependiendo de tus requisitos)
-
         // Actualizar el rol del usuario
         usuario.rol_id = nuevoRolId;
         await usuario.save();
 
-        return res.status(200).json({ ok: true, menssage: "Rol asignado correctamente" });
+        // Generar un nuevo token con la información actualizada del usuario
+        const token = jwt.sign({ correo: usuario.correo, id: usuario.id }, secretKey, { expiresIn });
+
+        // Devolver una respuesta adecuada con los datos del usuario actualizados y el nuevo token
+        const datosUsuario = {
+            correo: usuario.correo,
+            cedula: usuario.cedula,
+            nombre: usuario.nombre,
+            apellidos: usuario.apellidos,
+            telefono: usuario.telefono,
+            direccion: usuario.direccion,
+            rol_id: usuario.rol_id,
+            lider: usuario.lider
+        };
+
+        return res.status(200).json({ ok: true, menssage: "Rol asignado correctamente", usuario: datosUsuario, token });
     } catch (error) {
         console.error("Error al asignar rol:", error);
         return res.status(500).json({ ok: false, menssage: "Error interno del servidor" });
     }
 }
+
+module.exports = { asignarRol };

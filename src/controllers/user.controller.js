@@ -1,11 +1,16 @@
-import bcrypt from "bcrypt";
-import Usuario from '../models/user.models.js';
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Usuario = require("../models/user.models.js");
+
+const secretKey = "tu_clave_secreta";
 
 const saltRounds = 10;
 const EMPLEADO_ROL_ID = 3; // ID del rol de empleado
 const LIDER_ROL_ID = 2; // ID del rol de líder
 
-export async function crearCuenta(req, res) {
+const expiresIn = '1d'; // El token expirará después de 1 día
+
+async function crearCuenta(req, res) {
     try {
         const { correo, clave, confirmarClave, cedula, nombre, apellidos, telefono, direccion, lider } = req.body;
 
@@ -45,17 +50,35 @@ export async function crearCuenta(req, res) {
             apellidos,
             telefono,
             direccion,
-            rol_id: EMPLEADO_ROL_ID, // Establecer el ID de rol de empleado por defecto
-            lider: lider // Asignar el líder seleccionado
+            rol_id: EMPLEADO_ROL_ID, 
+            lider
         });
 
         // Guardar el nuevo usuario en la base de datos
         await nuevoUsuario.save();
 
-        // Devolver una respuesta adecuada
-        return res.status(201).json({ isOk: true, msj: "Usuario almacenado correctamente" });
+        // Generar un token para el nuevo usuario
+        const token = jwt.sign({ correo: nuevoUsuario.correo, id: nuevoUsuario.id }, secretKey, { expiresIn });
+
+        // Devolver una respuesta adecuada con los datos del usuario creado y el token
+        const datosUsuario = {
+            correo,
+            cedula,
+            nombre,
+            apellidos,
+            telefono,
+            direccion,
+            rol_id: EMPLEADO_ROL_ID,
+            lider
+        };
+
+        return res.status(201).json({ isOk: true, msj: "Usuario almacenado correctamente", usuario: datosUsuario, token });
     } catch (error) {
         console.error("Error al crear cuenta:", error);
         return res.status(500).json({ isOk: false, msj: "Error interno del servidor" });
     }
 }
+
+module.exports = {
+  crearCuenta
+};

@@ -1,4 +1,4 @@
-curl -X POST http://localhost:3500/login \
+curl -X POST  \
   -H "Content-Type: application/json" \
   -d '{
         "correo": "ciro@gmail.com",

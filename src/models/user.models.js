@@ -1,11 +1,22 @@
-import Sequelize from 'sequelize';
-import sequelize from '../conexion.js';
+// Importar Sequelize y la conexión a la base de datos
+const Sequelize = require('sequelize');
+const sequelize = require('../conexion.js');
+const Rol = require('./roles.model.js');
 
-const Usuario = sequelize.define('usuario', {
+// Definir el modelo para la tabla Usuarios
+const Usuario = sequelize.define('usuarios', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   correo: {
     type: Sequelize.STRING,
     allowNull: false,
-    unique: true
+    unique: {
+      name: 'usuarios_correo',
+      msg: 'El correo ya está en uso.'
+    }
   },
   clave: {
     type: Sequelize.STRING,
@@ -14,7 +25,10 @@ const Usuario = sequelize.define('usuario', {
   cedula: {
     type: Sequelize.STRING,
     allowNull: false,
-    unique: true
+    unique: {
+      name: 'usuarios_cedula',
+      msg: 'La cédula ya está en uso.'
+    }
   },
   nombre: {
     type: Sequelize.STRING,
@@ -32,20 +46,37 @@ const Usuario = sequelize.define('usuario', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  createdAt: {
+    type: Sequelize.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    allowNull: false
+  },
   rol_id: {
     type: Sequelize.INTEGER,
-    allowNull: false, // Opcional dependiendo de tus requisitos
-    defaultValue: 3 // Valor predeterminado para el rol de trabajador
+    defaultValue: 3,
+    allowNull: false
   },
   lider: {
-    type: Sequelize.STRING, // Cambiar el tipo de datos según tus necesidades (puede ser STRING, INTEGER, etc.)
-    allowNull: true // Permitir que el campo sea nulo
-  }
-
+    type: Sequelize.STRING,
+    defaultValue: null,
+    allowNull: true
+  },
 });
 
-// Sincronizar el modelo con la base de datos (solo si necesitas crear la tabla)
-// Este método se puede eliminar si ya tienes la tabla creada en tu base de datos
-Usuario.sync();
+// Establecer relación de clave externa (foreign key)
+Usuario.belongsTo(Rol, { foreignKey: 'rol_id' });
 
-export default Usuario;
+// Sincronizar el modelo con la base de datos y crear la tabla si no existe, pero de manera segura
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Modelos sincronizados correctamente.');
+  })
+  .catch(error => {
+    console.error('Error al sincronizar los modelos:', error);
+  });
+
+// Exportar el modelo
+module.exports = Usuario;

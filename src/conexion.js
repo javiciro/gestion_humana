@@ -1,4 +1,5 @@
-import Sequelize from 'sequelize';
+const Sequelize = require('sequelize');
+
 
 
 // Configuración de la conexión a la base de datos
@@ -17,4 +18,4 @@ sequelize.authenticate()
     console.error('Error de conexión a la base de datos:', err);
   });
 
-export default sequelize;
+  module.exports = sequelize; // Asegúrate de exportar la conexión
