@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../conexion.js');
 
+
 // Define el modelo para la tabla Roles
 const Rol = sequelize.define('roles', {
   id: {

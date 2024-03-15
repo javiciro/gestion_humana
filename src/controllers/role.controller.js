@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Usuario = require('../models/user.models.js');
+const { Usuario } = require("../models/user.models.js");
 
 const secretKey = process.env.LLAVE || "tu_clave_secreta";
 const expiresIn = '1d'; // El token expirará después de 1 día

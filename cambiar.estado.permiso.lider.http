@@ -1,6 +1,6 @@
 curl -X POST http://localhost:3500/permisos/aprobar/lider \
   -H "Content-Type: application/json" \
   -d '{
-        "idPermiso": 4,
-        "nuevoEstado": "LIDER APROBÓ"
-      }'
+    "idPermiso": "1",
+    "nuevoEstado": "LIDER APROBÓ"
+  }'

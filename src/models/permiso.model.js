@@ -1,7 +1,9 @@
 // Importar Sequelize y la conexión a la base de datos
 const Sequelize = require('sequelize');
 const sequelize = require('../conexion.js');
-const Usuario = require('./user.models.js');
+
+// Importar el modelo de usuario
+const Usuario = require('./user.models.js'); // Asegúrate de que la ruta sea correcta
 
 // Definir el modelo para la tabla Permisos
 const Permiso = sequelize.define('permisos', {
@@ -30,7 +32,6 @@ const Permiso = sequelize.define('permisos', {
     type: Sequelize.TEXT,
     defaultValue: null
   },
-
 
   aprobacion_lider: {
     type: Sequelize.BOOLEAN,

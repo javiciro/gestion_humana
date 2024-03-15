@@ -1,6 +1,6 @@
 curl -X POST http://localhost:3500/permisos/aprobar/recursos-humanos \
   -H "Content-Type: application/json" \
   -d '{
-        "idPermiso": 3,
+        "idPermiso": 1,
         "nuevoEstado": "RECURSOS HUMANOS APROBÓ"
       }'

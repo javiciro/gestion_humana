@@ -1,0 +1,11 @@
+curl -X POST http://localhost:3500/solicitar-permiso \
+  -H "Content-Type: application/json" \
+  -d '{
+    "usuario_id": "3",
+    "permiso": "Vacaciones",
+    "observaciones": "Necesito tomar una semana de vacaciones para descansar.",
+    "fechaInicio": "2024-03-15",
+    "fechaFin": "2024-04-16",
+    "tipoPermiso": "Pago",
+    "fecha": "2024-03-15" 
+  }'

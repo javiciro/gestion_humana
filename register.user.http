@@ -1,13 +1,13 @@
 curl -X POST http://localhost:3500/registro \
   -H "Content-Type: application/json" \
   -d '{
-    "correo": "usuariogg@example.com",
-    "clave": "contraseña123",
-    "confirmarClave": "contraseña123",
-    "cedula": "123456789g",
-    "nombre": "Nombre",
-    "apellidos": "Apellidos",
-    "telefono": "123456789",
-    "direccion": "Dirección",
-    "lider": 1
-}'
+        "correo": "ejemplo@example.com",
+        "clave": "contraseña123",
+        "confirmarClave": "contraseña123",
+        "cedula": "123456784",
+        "nombre": "Juan",
+        "apellidos": "Pérez",
+        "telefono": "1234567890",
+        "direccion": "Calle Principal",
+        "lider": 1
+      }'

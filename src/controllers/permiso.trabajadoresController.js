@@ -11,6 +11,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+/**
+ * Función para enviar un correo electrónico
+ * @param {string} destinatario - El correo electrónico del destinatario
+ * @param {string} asunto - El asunto del correo electrónico
+ * @param {string} cuerpo - El cuerpo del correo electrónico
+ */
 async function enviarCorreo(destinatario, asunto, cuerpo) {
   const mailOptions = {
     from: 'tu_correo@gmail.com',
@@ -19,18 +25,39 @@ async function enviarCorreo(destinatario, asunto, cuerpo) {
     text: cuerpo
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error al enviar correo:", error);
+  }
 }
 
+/**
+ * Controlador para solicitar un permiso
+ * @param {object} req - Objeto de solicitud HTTP
+ * @param {object} res - Objeto de respuesta HTTP
+ */
 async function solicitarPermiso(req, res) {
+  const { usuario_id, permiso, observaciones, fechaInicio, fechaFin, tipoPermiso } = req.body;
+
+  // Validaciones de datos obligatorios
+  const missingFields = [];
+  if (!usuario_id) missingFields.push('usuario_id');
+  if (!permiso) missingFields.push('permiso');
+  if (!observaciones) missingFields.push('observaciones');
+  if (!fechaInicio) missingFields.push('fechaInicio');
+  if (!fechaFin) missingFields.push('fechaFin');
+  if (!tipoPermiso) missingFields.push('tipoPermiso');
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      isOk: false,
+      msj: "Faltan datos obligatorios",
+      missingFields
+    });
+  }
+
   try {
-    const { usuario_id, permiso, observaciones, fechaInicio, fechaFin, tipoPermiso } = req.body;
-
-    // Verificar si se proporcionan todos los campos obligatorios
-    if (!usuario_id || !permiso || !observaciones || !fechaInicio || !fechaFin || !tipoPermiso) {
-      return res.status(400).json({ isOk: false, msj: "Faltan datos obligatorios" });
-    }
-
     // Buscar el usuario en la base de datos
     const usuario = await Usuario.findOne({ where: { id: usuario_id } });
     if (!usuario) {
@@ -48,7 +75,7 @@ async function solicitarPermiso(req, res) {
       usuario_id,
       permiso,
       observaciones,
-      fecha: fechaInicio, // Cambiar fecha a fecha de inicio del permiso
+      fecha: fechaInicio,
       fechaFin,
       tipoPermiso,
       estado: 'EN ESPERA'
